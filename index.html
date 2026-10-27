@@ -1,0 +1,103 @@
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Complaint Management</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f0fdfa;
+            padding: 25px;
+        }
+        
+        .container {
+            max-width: 650px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+        }
+        
+        input,
+        textarea,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin: 7px 0;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background: #0f766e;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .card {
+            background: #ecfdf5;
+            padding: 12px;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Cloud Complaint Management</h2>
+        <input id="person" placeholder="Your name">
+        <textarea id="message" placeholder="Describe your complaint"></textarea>
+        <button onclick="addComplaint()">Submit Complaint</button>
+        <div id="list"></div>
+    </div>
+    <script>
+        let complaints = JSON.parse(localStorage.getItem("complaints") || "[]");
+
+        function save() {
+            localStorage.setItem("complaints", JSON.stringify(complaints));
+            show();
+        }
+
+        function addComplaint() {
+            let person = document.getElementById("person").value.trim();
+            let message = document.getElementById("message").value.trim();
+            if (!person || !message) return alert("Fill all fields");
+            complaints.push({
+                person,
+                message,
+                status: "Pending"
+            });
+            document.getElementById("person").value = "";
+            document.getElementById("message").value = "";
+            save();
+        }
+
+        function show() {
+            let list = document.getElementById("list");
+            list.replaceChildren();
+            complaints.forEach((c, i) => {
+                let card = document.createElement("div");
+                card.className = "card";
+                let title = document.createElement("b");
+                title.textContent = c.person;
+                let msg = document.createElement("p");
+                msg.textContent = c.message;
+                let status = document.createElement("p");
+                status.textContent = "Status: " + c.status;
+                let btn = document.createElement("button");
+                btn.textContent = "Mark Resolved";
+                btn.onclick = () => {
+                    complaints[i].status = "Resolved";
+                    save();
+                };
+                card.append(title, msg, status, btn);
+                list.appendChild(card);
+            });
+        }
+        show();
+    </script>
+</body>
+
+</html>
+```
